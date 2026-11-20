@@ -1,93 +1,83 @@
-# Rezka · двойные субтитры
+# Rezka · Dual Subtitles
 
-Локальное расширение Manifest V3 для Chrome и совместимых браузеров: английская реплика с русским переводом по нажатию либо два языка одновременно. Версия 0.1.0.
+A Manifest V3 extension for **Google Chrome** that shows English and Russian subtitles together, or reveals the Russian translation when you click an English line. Version 0.1.0.
 
-- [Скачать CRX3 для Яндекс Браузера](https://github.com/stormrvge/rezka-dual-subtitles/raw/refs/heads/main/dist/rezka-dual-subtitles.crx)
-- [Скачать ZIP для Chrome / Edge](https://github.com/stormrvge/rezka-dual-subtitles/raw/refs/heads/main/dist/rezka-dual-subtitles.zip)
+Compatible browsers: **Google Chrome**, Microsoft Edge, and Yandex Browser. Automated browser testing was performed in Chromium; Microsoft Edge and Yandex Browser have not been tested separately.
 
-![Предпросмотр на тестовом плеере](docs/preview.png)
+- [Download ZIP for Google Chrome / Microsoft Edge](https://github.com/stormrvge/rezka-dual-subtitles/raw/refs/heads/main/dist/rezka-dual-subtitles.zip)
+- [Download the signed CRX3 package](https://github.com/stormrvge/rezka-dual-subtitles/raw/refs/heads/main/dist/rezka-dual-subtitles.crx)
 
+![Preview in the test player](docs/preview.png)
 
-## Установка
+## Install in Google Chrome
 
-1. Распакуй ZIP. Нужна папка `rezka-dual-subtitles`, внутри которой лежит `manifest.json`.
-2. В Chrome открой `chrome://extensions`.
-3. Включи «Режим разработчика» → «Загрузить распакованное расширение».
-4. Выбери папку `rezka-dual-subtitles`.
-5. Обнови страницу HDRezka и выбери «Оригинал (+субтитры)».
+1. Download and extract the ZIP archive. Find the `rezka-dual-subtitles` folder containing `manifest.json`.
+2. Open `chrome://extensions` in Google Chrome.
+3. Enable **Developer mode**, then click **Load unpacked**.
+4. Select the `rezka-dual-subtitles` folder.
+5. Reload HDRezka and select the original-audio option with subtitles.
 
-### Яндекс Браузер: готовый CRX3
+[Official Google Chrome installation guide](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 
-1. Скачай готовый `rezka-dual-subtitles.crx` рядом с ZIP. Это подписанный пакет формата **CRX3**; стандартное расширение имени файла — `.crx`.
-2. Открой в Яндекс Браузере `browser://tune`.
-3. Перетащи файл `.crx` из Finder в окно Браузера и подтверди установку.
-4. Расширение появится в разделе «Из других источников». Обнови HDRezka.
+## Usage
 
-Инструкция Яндекса: https://browser.yandex.ru/help/ru/personalization/extension.html
+The extension currently uses Russian interface labels. The steps below describe what each control does.
 
-Для CRX проверены версия формата 3, RSA-подпись и совпадение файлов с исходниками. Установка пакета в Яндекс Браузер отдельно не выполнялась.
+- Click **EN ↔ RU** in the upper-right corner of the video to open settings.
+- By default, only English is shown. Click a line to reveal its Russian translation below it. Click again to hide it. The translation is hidden when the next English line appears.
+- Choose the mode that always displays **EN + RU** to keep both languages visible.
+- Disable subtitles in the site's own player to avoid duplicate text. PlayerJS renders those subtitles in a separate layer.
+- English and Russian tracks are selected automatically when available. You can choose other tracks in settings.
+- Adjust the delay for each language independently. A positive value shows subtitles later.
+- **Alt+R** reveals or hides the translation. **Alt+S** switches modes. These shortcuts are inactive while you type in an input field.
+- If a track is missing, import your own **SRT/VTT** file in settings. Files are read locally, never uploaded, and cleared when you change episodes.
 
-В Edge управление расширениями находится на `edge://extensions`. Основной автоматический тест выполнен в Chromium; отдельная проверка Edge не выполнялась.
+Automatic activation is enabled on `rezka.ag`, `hdrezka.sb`, `hdrezka.ag`, `hdrezka.me`, and their subdomains. On another mirror, click the extension icon in the browser toolbar and use the button that connects it to the current page. Repeat this after a full page reload on that mirror.
 
-Официальная инструкция Chrome: https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked
+If CORS blocks subtitle loading, open the extension's toolbar popup and use the button that allows subtitle downloads. It requests access to the specific server hosting the detected tracks, then lets the extension download them. The tested files on `static.voidboost.com` provide `Access-Control-Allow-Origin: *`, so no additional permission was needed there.
 
-## Использование
+## How it works
 
-- Над видео справа появится кнопка **EN ↔ RU**. Она открывает настройки.
-- По умолчанию виден английский. Нажми на реплику: ниже появится русский перевод. Повторное нажатие скрывает его; при следующей английской реплике перевод снова скрывается.
-- Режим **EN + RU постоянно** показывает обе дорожки.
-- В самом плеере отключи обычные субтитры: **Субтитры → откл.**. PlayerJS рисует их собственным слоем, иначе они могут дублироваться с расширением.
-- Английский и русский выбираются автоматически, если доступны. В настройках можно выбрать другие дорожки.
-- Задержка настраивается для каждого языка отдельно. Положительное значение показывает реплику позже.
-- **Alt+R** показывает/скрывает перевод, **Alt+S** меняет режим. Комбинации не работают при вводе в поля.
-- Если нужной дорожки нет, загрузи свой **SRT/VTT** в настройках. Файл читается локально, не отправляется на сервер и сбрасывается при смене серии.
+The extension reads `subtitle` and `subtitle_lns` from the initial `sof.tv.initCDNSeriesEvents` configuration and from the site's existing `/ajax/get_cdn_series/` requests. It does not make additional requests to obtain video streams.
 
-Автоматическое подключение включено для `rezka.ag`, `hdrezka.sb`, `hdrezka.ag`, `hdrezka.me` и их поддоменов. На другом зеркале нажми значок расширения в панели браузера → **Подключить к этой странице**. На таком зеркале повторное подключение потребуется после полной перезагрузки страницы.
+Track lists use the format `[Russian]URL,[English]URL`, with labels supplied by the site. The extension downloads subtitle files, parses their timestamps, and renders text over the HTML video using `video.currentTime`. English and Russian cues are matched by time. Cue numbers and counts may differ; revealing a translation allows for small timing differences.
 
-Если загрузку блокирует CORS, открой значок расширения и нажми **Разрешить загрузку субтитров**. Запрашивается доступ к конкретному серверу обнаруженных дорожек, после чего загрузку выполняет расширение. На проверенной дорожке `static.voidboost.com` есть `Access-Control-Allow-Origin: *`, дополнительное разрешение не потребовалось.
+Changing episodes clears old cues and ignores late responses. Mode, text size, and delay settings are stored locally. Subtitle text and imported files are not saved to persistent storage.
 
-## Как это работает
+References: [PlayerJS subtitle format](https://playerjs.com/docs/en=subtitles) and [PlayerJS API](https://playerjs.com/docs/en=apicommands).
 
-Расширение читает `subtitle` и `subtitle_lns` из начальной конфигурации `sof.tv.initCDNSeriesEvents` и из уже выполняемых сайтом запросов `/ajax/get_cdn_series/`. Отдельных запросов для получения видеопотоков оно не делает.
+## Validation and limitations
 
-Плеер получает дорожки в формате `[Русский]URL,[English]URL`. Расширение загружает только файлы субтитров, разбирает таймкоды и выводит текст над HTML-видео по `video.currentTime`. Русские и английские строки сопоставляются по времени. Их номера и количество могут различаться; при раскрытии допускается небольшая разница таймингов.
+The player DOM and first-episode configuration were inspected on [this HDRezka page](https://hdrezka.sb/series/thriller/1931-proslushka-2002-latest.html). It provides Russian, English, and Ukrainian VTT tracks and uses a regular `<video>` in the main document with an empty standard `textTracks` list. The Russian and English files were successfully parsed: 934 and 848 cues, respectively. Full episode subtitle files are not included in this project.
 
-После смены серии старые реплики очищаются, запоздавшие ответы игнорируются. Настройки режима, размера и задержки сохраняются локально. Текст дорожек и локальных файлов в постоянное хранилище не записывается.
+Manifest V3 installation and interactions were tested on a representative fixture page. Playback on the real site with the extension installed has not been verified end to end.
 
-Формат и API PlayerJS: https://playerjs.com/docs/en=subtitles и https://playerjs.com/docs/en=apicommands
+Completed checks: **38/38 Node tests**, JavaScript syntax checks, and extension installation and UI scenarios in **Chrome for Testing 151.0.7922.34**. Browser checks covered both modes, click-to-reveal, seeking, small timing differences, local SRT import, episode changes, late-response rejection, video replacement, DOM fullscreen, and restoring standard text tracks when the extension is disabled. The CRX3 format, RSA signature, and agreement between its packaged runtime files and the source were also verified.
 
-## Границы проверки
+- The extension targets series and the standard HDRezka player. Movie initialization is not implemented separately.
+- Both tracks must be available for the selected episode or supplied by the user. There is no automatic machine translation.
+- Supported formats are SRT and VTT. Convert ASS/SSA files to SRT/VTT first.
+- DOM fullscreen is supported. System Picture-in-Picture and players inside third-party iframes may not display the extension's overlay.
+- Site changes may require adapter updates. The extension does not unlock restricted or paid sources.
 
-На открытой пользователем странице `https://hdrezka.sb/series/thriller/1931-proslushka-2002-latest.html` проверены DOM плеера и конфигурация первой серии: русский, английский и украинский VTT; обычный `<video>` в основном документе; стандартные `textTracks` пусты. Русский и английский файлы успешно прочитаны: 934 и 848 реплик соответственно. Полные файлы серии в поставку не включены.
+## Permissions and privacy
 
-Установка Manifest V3 и взаимодействия проверяются отдельным браузерным тестом на локально подставленной странице с такой же структурой. Это не означает сквозную проверку установленного расширения во время воспроизведения реального сериала.
+- `storage`: saves settings on this computer.
+- `activeTab` and `scripting`: connects to a mirror opened by the user when they click the activation button.
+- Static content scripts: run only on the listed HDRezka domains.
+- `optional_host_permissions`: lets the extension request access to a specific subtitle server when loading from the page fails. Access to all websites is not granted automatically.
 
-Выполненная проверка: **38/38 Node-тестов**, синтаксис всех скриптов, установка и сценарии интерфейса в **Chrome for Testing 151.0.7922.34**. Браузерный тест прошёл оба режима, раскрытие перевода, перемотку, небольшой сдвиг таймингов, локальный SRT, сброс при смене серии, отклонение запоздавшего ответа, замену видео, полный экран и восстановление стандартных textTracks после отключения.
+There is no analytics, remote executable code, API key requirement, or translation service. Subtitle downloads omit cookies and reject redirects. The maximum file size is 5 MiB.
 
-- Расширение рассчитано на сериалы и стандартный плеер HDRezka. Инициализация фильмов отдельно не реализована.
-- Обе дорожки должны быть доступны у выбранной серии или предоставлены пользователем. Автоматического машинного перевода нет.
-- Поддерживаются SRT и VTT. ASS/SSA нужно предварительно преобразовать в SRT/VTT.
-- Полный экран DOM поддерживается; системный Picture-in-Picture и плеер внутри стороннего iframe могут не показывать слой расширения.
-- Изменения сайта могут потребовать обновления адаптера. Закрытые и платные источники расширение не открывает.
+## Development checks
 
-## Разрешения и данные
-
-- `storage`: настройки на этом компьютере.
-- `activeTab` и `scripting`: подключение к открытому пользователем зеркалу по нажатию.
-- Статические content scripts: только перечисленные домены HDRezka.
-- `optional_host_permissions`: возможность запросить конкретный сервер субтитров, если чтение из страницы не работает. Доступ ко всем сайтам автоматически не выдаётся.
-
-Нет аналитики, удалённого исполняемого кода, API-ключей и сервиса перевода. Загрузки файлов субтитров выполняются без cookies; переходы на другие адреса при загрузке запрещены. Максимальный размер файла — 5 МиБ.
-
-## Проверка исходников
-
-Нужен Node.js 20+:
+Node.js 20+ is required to run the tests:
 
 ```sh
 node --test tests/*.test.cjs
 ```
 
-Браузерный тест требует установленного `playwright` и Chromium:
+The browser test also requires Playwright and Chromium:
 
 ```sh
 npm install --no-save playwright
@@ -95,4 +85,4 @@ npx playwright install chromium
 node tests/browser-smoke.cjs
 ```
 
-Тест запускает отдельный временный профиль с расширением, подставляет страницу и короткие собственные субтитры вместо сетевых ответов. Реальные видео не загружаются. Для готового расширения Node.js и Playwright не нужны.
+The browser test uses a separate temporary profile with the extension installed and supplies a fixture page with short original subtitle samples. No real video is downloaded. Node.js and Playwright are not required to use the packaged extension.
